@@ -1,6 +1,7 @@
 package Windows
 
 import (
+	"github.com/kardianos/service"
 	"log"
 	"os"
 )
@@ -12,10 +13,6 @@ func main() {
 }
 
 */
-
-import (
-	"github.com/kardianos/service"
-)
 
 type SrvIntf interface {
 	Onstart()
