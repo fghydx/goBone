@@ -1,4 +1,4 @@
-package GLDBHelper
+package ToolsDBHelper
 
 import (
 	"database/sql/driver"

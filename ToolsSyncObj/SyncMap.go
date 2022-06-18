@@ -1,4 +1,4 @@
-package SyncObj
+package ToolsSyncObj
 
 import (
 	"sync"

@@ -1,5 +1,5 @@
 // golang 实现读取exe dll 版本号
-package GLFile
+package ToolFiles
 
 import (
 	"fmt"
@@ -26,13 +26,13 @@ type fileInfo struct {
 }
 
 func GetFileVersion(filepath string) string {
-	fileinfo := &fileInfo{FilePath:filepath}
+	fileinfo := &fileInfo{FilePath: filepath}
 	fileinfo.GetExeVersion()
 	return fileinfo.version
 }
 
-func GetFileVersionA(filepath string) []int64{
-	fileinfo := &fileInfo{FilePath:filepath}
+func GetFileVersionA(filepath string) []int64 {
+	fileinfo := &fileInfo{FilePath: filepath}
 	fileinfo.GetExeVersion()
 	return fileinfo.versionA
 }
@@ -49,7 +49,7 @@ func GetDirSize(path string) (int64, error) {
 }
 
 func GetFileSize(path string) int64 {
-	if b,_:=Exists(path);!b{
+	if b, _ := Exists(path); !b {
 		return 0
 	}
 	fileInfo, err := os.Stat(path)
@@ -63,17 +63,16 @@ func GetFileModTime(path string) int64 {
 	f, err := os.Open(path)
 	if err != nil {
 		log.Println("open file error")
-		return time.Unix(0,0).Unix()
+		return time.Unix(0, 0).Unix()
 	}
 	defer f.Close()
 	fi, err := f.Stat()
 	if err != nil {
 		log.Println("stat fileinfo error")
-		return time.Unix(0,0).Unix()
+		return time.Unix(0, 0).Unix()
 	}
 	return fi.ModTime().Unix()
 }
-
 
 func (f *fileInfo) checkError(err error) {
 	if err != nil {

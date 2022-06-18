@@ -1,4 +1,4 @@
-package GLStrings
+package ToolsString
 
 import (
 	"regexp"

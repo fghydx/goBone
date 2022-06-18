@@ -1,4 +1,4 @@
-package GLStrings
+package ToolsString
 
 import (
 	"unicode/utf8"
@@ -62,7 +62,7 @@ func (b *BuilderEx) Reset() {
 	b.buf = nil
 }
 
-func (b *BuilderEx) Clear(){
+func (b *BuilderEx) Clear() {
 	b.buf = b.buf[0:0]
 }
 
@@ -127,4 +127,3 @@ func (b *BuilderEx) WriteString(s string) (int, error) {
 	b.buf = append(b.buf, s...)
 	return len(s), nil
 }
-

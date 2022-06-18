@@ -1,4 +1,4 @@
-package GLDBHelper
+package ToolsDBHelper
 
 import (
 	"database/sql"
@@ -19,9 +19,9 @@ func (m *Mysql) Open() (err error) {
 	return nil
 }
 
-func GetDBByConnectString_Mysql(connectString string) *Mysql{
+func GetDBByConnectString_Mysql(connectString string) *Mysql {
 	db := &Mysql{
-		connectString:connectString,
+		connectString: connectString,
 	}
 	err := db.Open()
 	if err != nil {
@@ -31,10 +31,10 @@ func GetDBByConnectString_Mysql(connectString string) *Mysql{
 	return db
 }
 
-func GetDB_Mysql(server string,port int,DBName string,UName string,Pass string) *Mysql{
-	connectString := fmt.Sprintf("%s:%s@%s(%s:%d)/%s",UName,Pass,"tcp",server,port,DBName)
+func GetDB_Mysql(server string, port int, DBName string, UName string, Pass string) *Mysql {
+	connectString := fmt.Sprintf("%s:%s@%s(%s:%d)/%s", UName, Pass, "tcp", server, port, DBName)
 	db := &Mysql{
-		connectString:connectString,
+		connectString: connectString,
 	}
 	err := db.Open()
 	if err != nil {

@@ -1,4 +1,4 @@
-package GLDBHelper
+package ToolsDBHelper
 
 import (
 	"database/sql"
@@ -9,23 +9,23 @@ import (
 
 func DoQuery(rows *sql.Rows) ([]map[string]interface{}, error) {
 	columns, _ := rows.Columns()
-	columnstype,_ := rows.ColumnTypes()
+	columnstype, _ := rows.ColumnTypes()
 	columnLength := len(columns)
 	cache := make([]interface{}, columnLength) //临时存储每行数据
-	for index,_ := range cache { //为每一列初始化一个指针
+	for index, _ := range cache {              //为每一列初始化一个指针
 		var a interface{}
 		cache[index] = &a
 	}
-	var list = make([]map[string]interface{},0) //返回的切片
+	var list = make([]map[string]interface{}, 0) //返回的切片
 	for rows.Next() {
 		_ = rows.Scan(cache...)
 
 		item := make(map[string]interface{})
 		for i, data := range cache {
 			switch columnstype[i].DatabaseTypeName() {
-			case "CHAR","VARCHAR":
+			case "CHAR", "VARCHAR":
 				{
-					item[columns[i]],_ = (*data.(*interface{})).(string)
+					item[columns[i]], _ = (*data.(*interface{})).(string)
 				}
 			default:
 				{
@@ -39,12 +39,12 @@ func DoQuery(rows *sql.Rows) ([]map[string]interface{}, error) {
 	return list, nil
 }
 
-func DoProcessRow(row *sql.Rows,Afunc func(data map[string]interface{},Atype []*sql.ColumnType) bool) error{
+func DoProcessRow(row *sql.Rows, Afunc func(data map[string]interface{}, Atype []*sql.ColumnType) bool) error {
 	columns, _ := row.Columns()
-	columnstype,_ := row.ColumnTypes()
+	columnstype, _ := row.ColumnTypes()
 	columnLength := len(columns)
 	rowdatas := make([]interface{}, columnLength)
-	for index,_ := range rowdatas { //为每一列初始化一个指针
+	for index, _ := range rowdatas { //为每一列初始化一个指针
 		var a interface{}
 		rowdatas[index] = &a
 	}
@@ -56,20 +56,20 @@ func DoProcessRow(row *sql.Rows,Afunc func(data map[string]interface{},Atype []*
 	for i, data := range rowdatas {
 		item[columns[i]] = *data.(*interface{}) //取实际类型
 	}
-	Afunc(item,columnstype)
+	Afunc(item, columnstype)
 	return nil
 }
 
-func DoProcessRows(rows *sql.Rows,Afunc func(data map[string]interface{},Atype []*sql.ColumnType) bool) error{
+func DoProcessRows(rows *sql.Rows, Afunc func(data map[string]interface{}, Atype []*sql.ColumnType) bool) error {
 	columns, _ := rows.Columns()
-	columnstype,_ := rows.ColumnTypes()
+	columnstype, _ := rows.ColumnTypes()
 	columnLength := len(columns)
 	rowdatas := make([]interface{}, columnLength)
-	for index,_ := range rowdatas { //为每一列初始化一个指针
+	for index, _ := range rowdatas { //为每一列初始化一个指针
 		var a interface{}
 		rowdatas[index] = &a
 	}
-	for rows.Next(){
+	for rows.Next() {
 		err := rows.Scan(rowdatas...)
 		if err != nil {
 			return err
@@ -78,12 +78,14 @@ func DoProcessRows(rows *sql.Rows,Afunc func(data map[string]interface{},Atype [
 		for i, data := range rowdatas {
 			item[columns[i]] = *data.(*interface{}) //取实际类型
 		}
-		if !Afunc(item,columnstype) {break}
+		if !Afunc(item, columnstype) {
+			break
+		}
 	}
 	return nil
 }
 
-func mapping(AfieldName string,Avalue string, v reflect.Value) error {
+func mapping(AfieldName string, Avalue string, v reflect.Value) error {
 	t := v.Type()
 	val := v.Elem()
 	typ := t.Elem()
@@ -97,7 +99,7 @@ func mapping(AfieldName string,Avalue string, v reflect.Value) error {
 		kind := value.Kind()
 		tag := typ.Field(i).Tag.Get("col")
 
-		if (len(tag) > 0) && (tag==AfieldName) {
+		if (len(tag) > 0) && (tag == AfieldName) {
 			meta := Avalue
 			if !value.CanSet() {
 				return errors.New("结构体字段没有读写权限")
@@ -148,12 +150,12 @@ func mapping(AfieldName string,Avalue string, v reflect.Value) error {
 	return nil
 }
 
-func DoRowToStruct(rows *sql.Rows,objaddr interface{}) error{
+func DoRowToStruct(rows *sql.Rows, objaddr interface{}) error {
 	columns, _ := rows.Columns()
 	columnLength := len(columns)
 	cache := make([]interface{}, columnLength) //临时存储每行数据
-	values := make([][]byte, columnLength) //values是每个列的值，这里获取到byte里
-	for index,_ := range cache { //为每一列初始化一个指针
+	values := make([][]byte, columnLength)     //values是每个列的值，这里获取到byte里
+	for index, _ := range cache {              //为每一列初始化一个指针
 		cache[index] = &values[index]
 	}
 
@@ -171,7 +173,7 @@ func DoRowToStruct(rows *sql.Rows,objaddr interface{}) error{
 	newObj := reflect.New(k.Type())
 
 	for i, data := range values {
-		err = mapping(columns[i],string(data),newObj)
+		err = mapping(columns[i], string(data), newObj)
 		if err != nil {
 			return err
 		}
@@ -180,15 +182,15 @@ func DoRowToStruct(rows *sql.Rows,objaddr interface{}) error{
 	return nil
 }
 
-func DoRowsToStruct(rows *sql.Rows,objaddr interface{}) error{
+func DoRowsToStruct(rows *sql.Rows, objaddr interface{}) error {
 	columns, _ := rows.Columns()
 	columnLength := len(columns)
 	cache := make([]interface{}, columnLength) //临时存储每行数据
-	values := make([][]byte, columnLength) //values是每个列的值，这里获取到byte里
-	for index,_ := range cache { //为每一列初始化一个指针
+	values := make([][]byte, columnLength)     //values是每个列的值，这里获取到byte里
+	for index, _ := range cache {              //为每一列初始化一个指针
 		cache[index] = &values[index]
 	}
-	
+
 	v := reflect.ValueOf(objaddr).Elem()
 	newv := reflect.MakeSlice(v.Type(), 0, 0)
 
@@ -201,12 +203,12 @@ func DoRowsToStruct(rows *sql.Rows,objaddr interface{}) error{
 		newObj := reflect.New(k)
 
 		for i, data := range values {
-			err = mapping(columns[i],string(data),newObj)
+			err = mapping(columns[i], string(data), newObj)
 			if err != nil {
 				return err
 			}
 		}
-		newv = reflect.Append(newv,newObj.Elem())
+		newv = reflect.Append(newv, newObj.Elem())
 	}
 	v.Set(newv)
 	return nil

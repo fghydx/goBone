@@ -1,11 +1,12 @@
-package SyncObj
+package ToolsSyncObj
 
-import ("sync"
-	"MyLib/ThirdUnit"
+import (
 	"MyLib/GLFile"
+	"MyLib/ThirdUnit"
 	"encoding/json"
 	"fmt"
 	"strings"
+	"sync"
 )
 
 // Synchronous FIFO queue
@@ -88,7 +89,7 @@ func (q *SyncQueue) Close() {
 	}
 }
 
-func (q *SyncQueue) Closed() bool{
+func (q *SyncQueue) Closed() bool {
 	q.lock.Lock()
 	defer q.lock.Unlock()
 	if q.closed {
@@ -97,7 +98,7 @@ func (q *SyncQueue) Closed() bool{
 	return false
 }
 
-func (q *SyncQueue)SaveToFile(filename string){
+func (q *SyncQueue) SaveToFile(filename string) {
 	GLFile.ClearFile(filename)
 	buffer := q.buffer
 	q.lock.Lock()
@@ -106,29 +107,29 @@ func (q *SyncQueue)SaveToFile(filename string){
 		if buffer.Length() > 0 {
 			v := buffer.Peek()
 			buffer.Remove()
-			str,err := json.Marshal(&v)
+			str, err := json.Marshal(&v)
 			if err != nil {
-				fmt.Println(err.Error()+"\r\n")
+				fmt.Println(err.Error() + "\r\n")
 				return
 			}
-			GLFile.AppendTextToFile(filename,string(str)+"\r\n")
+			GLFile.AppendTextToFile(filename, string(str)+"\r\n")
 		} else {
 			return
 		}
 	}
 }
 
-func (q *SyncQueue)LoadFromFile(filename string){
+func (q *SyncQueue) LoadFromFile(filename string) {
 	filestr := GLFile.ReadTextFromFile(filename)
 	str := strings.TrimSpace(string(filestr))
-	datas := strings.Split(str,"\r\n")
+	datas := strings.Split(str, "\r\n")
 	q.lock.Lock()
 	defer q.lock.Unlock()
 	for _, value := range datas {
 		var data interface{}
-		err := json.Unmarshal([]byte(value),&data)
+		err := json.Unmarshal([]byte(value), &data)
 		if err != nil {
-			fmt.Println("SyncQueue.LoadFromFile",err.Error() + "\r\n")
+			fmt.Println("SyncQueue.LoadFromFile", err.Error()+"\r\n")
 			continue
 		}
 		q.Push(data)

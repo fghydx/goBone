@@ -1,14 +1,14 @@
-package GLCompress
+package ToolsCompress
 
 import (
 	"bytes"
 	"compress/gzip"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"fmt"
 )
 
-func Compress_Gzip(value []byte) []byte{
+func Compress_Gzip(value []byte) []byte {
 	buf := new(bytes.Buffer)
 	gr := gzip.NewWriter(buf)
 	defer gr.Close()
@@ -17,13 +17,13 @@ func Compress_Gzip(value []byte) []byte{
 	return buf.Bytes()
 }
 
-func UnCompress_Gzip(value []byte) []byte{
+func UnCompress_Gzip(value []byte) []byte {
 	buf := new(bytes.Buffer)
 	buf.Write(value)
-	gr,err := gzip.NewReader(buf)
+	gr, err := gzip.NewReader(buf)
 	if err == nil {
 		defer gr.Close()
-		bufout,err := ioutil.ReadAll(gr)
+		bufout, err := ioutil.ReadAll(gr)
 		if err == nil {
 			return bufout
 		} else {
@@ -35,7 +35,7 @@ func UnCompress_Gzip(value []byte) []byte{
 			}
 		}
 	} else {
-		fmt.Println("Gzip单元:UnCompress_Gzip Error",err.Error())
+		fmt.Println("Gzip单元:UnCompress_Gzip Error", err.Error())
 		return value
 	}
 }

@@ -1,4 +1,4 @@
-package GLFile
+package ToolFiles
 
 import (
 	"bufio"

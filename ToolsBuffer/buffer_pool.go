@@ -1,4 +1,4 @@
-package GLBuffer
+package ToolsBuffer
 
 import (
 	"math"

@@ -1,10 +1,10 @@
-package GLStrings
+package ToolsString
 
 import (
-	"io"
+	"MyLib/GLCrypto"
 	"crypto/rand"
 	"encoding/base64"
-	"MyLib/GLCrypto"
+	"io"
 )
 
 func GetGuid() string {

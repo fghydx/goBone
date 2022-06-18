@@ -1,4 +1,4 @@
-package GLStrings
+package ToolsString
 
 import (
 	"crypto/md5"
@@ -50,7 +50,7 @@ func readMachineId() []byte {
 	hw := md5.New()
 	hw.Write([]byte(hostname))
 	copy(id, hw.Sum(nil))
-//	fmt.Println("readMachineId:" + string(id))
+	//	fmt.Println("readMachineId:" + string(id))
 	return id
 }
 
@@ -62,7 +62,7 @@ func readMachineId() []byte {
 func NewObjectId() ObjectId {
 	var b [12]byte
 	// Timestamp, 4 bytes, big endian
-//	atomic.CompareAndSwapUint32(&objectIdCounter,math.MaxUint32,0)
+	//	atomic.CompareAndSwapUint32(&objectIdCounter,math.MaxUint32,0)
 	binary.BigEndian.PutUint32(b[:], uint32(time.Now().Unix()))
 	// Machine, first 3 bytes of md5(hostname)
 	b[4] = machineId[0]

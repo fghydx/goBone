@@ -1,4 +1,4 @@
-package GLStrings
+package ToolsString
 
 import "math/rand"
 import "time"
@@ -19,7 +19,7 @@ var letterRunes0 = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1
 var letterRunes1 = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 var letterRunes2 = []rune("1234567890")
 
-func RandStringRunes(n int,t StringType) string {
+func RandStringRunes(n int, t StringType) string {
 	b := make([]rune, n)
 	switch t {
 	case Letter:

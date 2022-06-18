@@ -1,4 +1,4 @@
-package GLCrypto
+package ToolsCrypto
 
 import (
 	"crypto"

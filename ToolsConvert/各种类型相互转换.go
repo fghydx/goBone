@@ -1,4 +1,4 @@
-package GLConvert
+package ToolsConvert
 
 import (
 	"bytes"
@@ -18,6 +18,7 @@ func Int32ToBytes_LittleEndian(n int) []byte {
 	binary.Write(bytesBuffer, binary.LittleEndian, x)
 	return bytesBuffer.Bytes()
 }
+
 //整形32位转换成字节
 func Int32ToBytes_BigEndian(n int) []byte {
 	x := int32(n)
@@ -115,7 +116,7 @@ func ByteToFloat64_BigEndian(bytes []byte) float64 {
 }
 
 //浮点数保留几位小数
-func FormatFloat(value float64,decNum uint8) (result float64) {
+func FormatFloat(value float64, decNum uint8) (result float64) {
 	result, err := strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(int(decNum))+"f", value), 64)
 	if err != nil {
 		panic(err)
@@ -124,14 +125,14 @@ func FormatFloat(value float64,decNum uint8) (result float64) {
 }
 
 //字符串转浮点型
-func StrToFloat(value string) (result float64){
+func StrToFloat(value string) (result float64) {
 	result, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		panic(err)
 	}
 	return result
 }
-func StrToFloatDef(value string,defvalue float64) (result float64){
+func StrToFloatDef(value string, defvalue float64) (result float64) {
 	result, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		result = defvalue
@@ -139,38 +140,37 @@ func StrToFloatDef(value string,defvalue float64) (result float64){
 	return result
 }
 
-
-func StrToInt(value string) (result int){
-	result,_= strconv.Atoi(value)
+func StrToInt(value string) (result int) {
+	result, _ = strconv.Atoi(value)
 	return
 }
 
-func StrToIntdef(value string,defvalue int) (result int){
-	result,err := strconv.Atoi(value)
+func StrToIntdef(value string, defvalue int) (result int) {
+	result, err := strconv.Atoi(value)
 	if err != nil {
 		result = defvalue
 	}
 	return
 }
 
-func StrToDateTime(str string,fmt string) time.Time{
-	result,err := time.Parse(fmt,str)
+func StrToDateTime(str string, fmt string) time.Time {
+	result, err := time.Parse(fmt, str)
 	if err != nil {
-		return time.Unix(0,0)
+		return time.Unix(0, 0)
 	}
 	return result
 }
 
-func UnixTimeToDateTime(value int64) time.Time{
-	return time.Unix(value,0)
+func UnixTimeToDateTime(value int64) time.Time {
+	return time.Unix(value, 0)
 }
 
-func IntToStr(value int) (result string){
+func IntToStr(value int) (result string) {
 	return strconv.Itoa(value)
 }
 
-func Int64ToStr(value int64)(result string){
-	return strconv.FormatInt(value,10)
+func Int64ToStr(value int64) (result string) {
+	return strconv.FormatInt(value, 10)
 }
 
 func SliceByteToString(b []byte) string {

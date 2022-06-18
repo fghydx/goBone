@@ -1,4 +1,4 @@
-package GLError
+package ToolsError
 
 import (
 	"fmt"

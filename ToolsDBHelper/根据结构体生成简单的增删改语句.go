@@ -1,4 +1,4 @@
-package GLDBHelper
+package ToolsDBHelper
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 
 //简单的生成SQL语句
 type DbStruct struct {
-
 }
+
 //type Testt struct {
 //	DbStruct
 //	Aid int `col:"aid"`
@@ -18,14 +18,14 @@ type DbStruct struct {
 //	Cde float64 `col:"cde"`
 //}
 //生成插入语句
-func (DS *DbStruct)Insert(TblName string,obj interface{}) string{
+func (DS *DbStruct) Insert(TblName string, obj interface{}) string {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 		v = v.Elem()
 	}
-	if len(TblName)==0 {
+	if len(TblName) == 0 {
 		TblName = t.Name()
 	}
 	fieldNum := t.NumField()
@@ -34,43 +34,43 @@ func (DS *DbStruct)Insert(TblName string,obj interface{}) string{
 	values := ""
 	for i := 0; i < fieldNum; i++ {
 		ftag := t.Field(i).Tag.Get("col")
-		if len(ftag)==0 {
+		if len(ftag) == 0 {
 			continue
 		}
-		tmp := strings.Split(ftag,",")
+		tmp := strings.Split(ftag, ",")
 		omitempty := false
-		if len(tmp)==2 {
-			omitempty = tmp[1]=="omitempty"
+		if len(tmp) == 2 {
+			omitempty = tmp[1] == "omitempty"
 		}
-		field = field + tmp[0] +","
+		field = field + tmp[0] + ","
 
 		switch v.Field(i).Kind() {
 		case reflect.String:
-			if !(omitempty && v.Field(i).String()=="") {
-				values = values + fmt.Sprintf(`"%s",`,v.Field(i).String())
+			if !(omitempty && v.Field(i).String() == "") {
+				values = values + fmt.Sprintf(`"%s",`, v.Field(i).String())
 			}
-		case reflect.Int,reflect.Int8,reflect.Int16,reflect.Int32,reflect.Int64:
-			if !(omitempty && v.Field(i).Int()==0) {
-				values = values + fmt.Sprintf(`%d,`,v.Field(i).Int())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			if !(omitempty && v.Field(i).Int() == 0) {
+				values = values + fmt.Sprintf(`%d,`, v.Field(i).Int())
 			}
-		case reflect.Float32,reflect.Float64:
-			if !(omitempty && v.Field(i).Float()==0) {
-				values = values + fmt.Sprintf(`%f,`,v.Field(i).Float())
+		case reflect.Float32, reflect.Float64:
+			if !(omitempty && v.Field(i).Float() == 0) {
+				values = values + fmt.Sprintf(`%f,`, v.Field(i).Float())
 			}
 		case reflect.Bool:
 			if !(omitempty && !v.Field(i).Bool()) {
-				values = values + fmt.Sprintf(`%t,`,v.Field(i).Bool())
+				values = values + fmt.Sprintf(`%t,`, v.Field(i).Bool())
 			}
 		default:
-			if !(omitempty && len(v.Field(i).Bytes())==0) {
+			if !(omitempty && len(v.Field(i).Bytes()) == 0) {
 				values = values + string(v.Field(i).Bytes()) + ","
 			}
 		}
 	}
-	return fmt.Sprintf(tmpstr,TblName,field[:len(field)-1],values[:len(values)-1])
+	return fmt.Sprintf(tmpstr, TblName, field[:len(field)-1], values[:len(values)-1])
 }
 
-func (DS *DbStruct) GenerateArgs(obj interface{}) string{
+func (DS *DbStruct) GenerateArgs(obj interface{}) string {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	if t.Kind() == reflect.Ptr {
@@ -81,42 +81,42 @@ func (DS *DbStruct) GenerateArgs(obj interface{}) string{
 	fieldNum := t.NumField()
 	for i := 0; i < fieldNum; i++ {
 		ftag := t.Field(i).Tag.Get("col")
-		if len(ftag)==0 {
+		if len(ftag) == 0 {
 			continue
 		}
-		tmp := strings.Split(ftag,",")
+		tmp := strings.Split(ftag, ",")
 		omitempty := false
-		if len(tmp)==2 {
-			omitempty = tmp[1]=="omitempty"
+		if len(tmp) == 2 {
+			omitempty = tmp[1] == "omitempty"
 		}
-		colName := "@"+tmp[0]
+		colName := "@" + tmp[0]
 		switch v.Field(i).Kind() {
 		case reflect.String:
-			if !(omitempty && v.Field(i).String()=="") {
-				field = field + colName + fmt.Sprintf(`="%s",`,v.Field(i).String())
+			if !(omitempty && v.Field(i).String() == "") {
+				field = field + colName + fmt.Sprintf(`="%s",`, v.Field(i).String())
 			}
-		case reflect.Int,reflect.Int8,reflect.Int16,reflect.Int32,reflect.Int64:
-			if !(omitempty && v.Field(i).Int()==0) {
-				field = field + colName + fmt.Sprintf(`=%d,`,v.Field(i).Int())
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			if !(omitempty && v.Field(i).Int() == 0) {
+				field = field + colName + fmt.Sprintf(`=%d,`, v.Field(i).Int())
 			}
-		case reflect.Float32,reflect.Float64:
-			if !(omitempty && v.Field(i).Float()==0) {
-				field = field + colName + fmt.Sprintf(`=%f,`,v.Field(i).Float())
+		case reflect.Float32, reflect.Float64:
+			if !(omitempty && v.Field(i).Float() == 0) {
+				field = field + colName + fmt.Sprintf(`=%f,`, v.Field(i).Float())
 			}
 		case reflect.Bool:
 			if !(omitempty && !v.Field(i).Bool()) {
-				field = field + colName+  fmt.Sprintf(`=%t,`,v.Field(i).Bool())
+				field = field + colName + fmt.Sprintf(`=%t,`, v.Field(i).Bool())
 			}
 		default:
-			if !(omitempty && len(v.Field(i).Bytes())==0) {
-				field = field + colName + "=" +string(v.Field(i).Bytes()) + ","
+			if !(omitempty && len(v.Field(i).Bytes()) == 0) {
+				field = field + colName + "=" + string(v.Field(i).Bytes()) + ","
 			}
 		}
 	}
 	return field[:len(field)-1]
 }
 
-func (DS *DbStruct)Update(TblName string,obj interface{},Key string) string {
+func (DS *DbStruct) Update(TblName string, obj interface{}, Key string) string {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	if t.Kind() == reflect.Ptr {
@@ -129,62 +129,62 @@ func (DS *DbStruct)Update(TblName string,obj interface{},Key string) string {
 	fieldNum := t.NumField()
 	for i := 0; i < fieldNum; i++ {
 		ftag := t.Field(i).Tag.Get("col")
-		if len(ftag)==0 {
+		if len(ftag) == 0 {
 			continue
 		}
-		tmp := strings.Split(ftag,",")
+		tmp := strings.Split(ftag, ",")
 		omitempty := false
-		if len(ftag)==2 {
-			omitempty = tmp[1]=="omitempty"
+		if len(ftag) == 2 {
+			omitempty = tmp[1] == "omitempty"
 		}
 		colName := tmp[0]
 		switch v.Field(i).Kind() {
 		case reflect.String:
 			if colName == Key {
-				where = Key + fmt.Sprintf(`="%s"`,v.Field(i).String())
+				where = Key + fmt.Sprintf(`="%s"`, v.Field(i).String())
 				continue
 			}
-			if !(omitempty && v.Field(i).String()=="") {
-				field = field + colName + fmt.Sprintf(`="%s",`,v.Field(i).String())
+			if !(omitempty && v.Field(i).String() == "") {
+				field = field + colName + fmt.Sprintf(`="%s",`, v.Field(i).String())
 			}
-		case reflect.Int,reflect.Int8,reflect.Int16,reflect.Int32,reflect.Int64:
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			if colName == Key {
-				where = Key + fmt.Sprintf(`=%d`,v.Field(i).Int())
+				where = Key + fmt.Sprintf(`=%d`, v.Field(i).Int())
 				continue
 			}
-			if !(omitempty && v.Field(i).Int()==0) {
-				field = field + colName + fmt.Sprintf(`=%d,`,v.Field(i).Int())
+			if !(omitempty && v.Field(i).Int() == 0) {
+				field = field + colName + fmt.Sprintf(`=%d,`, v.Field(i).Int())
 			}
-		case reflect.Float32,reflect.Float64:
+		case reflect.Float32, reflect.Float64:
 			if colName == Key {
-				where = Key + fmt.Sprintf(`=%f`,v.Field(i).Float())
+				where = Key + fmt.Sprintf(`=%f`, v.Field(i).Float())
 				continue
 			}
-			if !(omitempty && v.Field(i).Float()==0) {
-				field = field + colName + fmt.Sprintf(`=%f,`,v.Field(i).Float())
+			if !(omitempty && v.Field(i).Float() == 0) {
+				field = field + colName + fmt.Sprintf(`=%f,`, v.Field(i).Float())
 			}
 		case reflect.Bool:
 			if colName == Key {
-				where = Key + fmt.Sprintf(`=%t`,v.Field(i).Bool())
+				where = Key + fmt.Sprintf(`=%t`, v.Field(i).Bool())
 				continue
 			}
 			if !(omitempty && !v.Field(i).Bool()) {
-				field = field + colName+  fmt.Sprintf(`=%t,`,v.Field(i).Bool())
+				field = field + colName + fmt.Sprintf(`=%t,`, v.Field(i).Bool())
 			}
 		default:
 			if colName == Key {
-				where = Key + "=" +string(v.Field(i).Bytes())
+				where = Key + "=" + string(v.Field(i).Bytes())
 				continue
 			}
-			if !(omitempty && len(v.Field(i).Bytes())==0) {
-				field = field + colName + "=" +string(v.Field(i).Bytes()) + ","
+			if !(omitempty && len(v.Field(i).Bytes()) == 0) {
+				field = field + colName + "=" + string(v.Field(i).Bytes()) + ","
 			}
 		}
 	}
-	return fmt.Sprintf(tmpstr,TblName,field[:len(field)-1],where)
+	return fmt.Sprintf(tmpstr, TblName, field[:len(field)-1], where)
 }
 
-func (DS *DbStruct)Delete(TblName string,obj interface{},Key string) string {
+func (DS *DbStruct) Delete(TblName string, obj interface{}, Key string) string {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	if t.Kind() == reflect.Ptr {
@@ -195,7 +195,7 @@ func (DS *DbStruct)Delete(TblName string,obj interface{},Key string) string {
 	tmpstr := "delete %s where %s"
 	fieldNum := t.NumField()
 	for i := 0; i < fieldNum; i++ {
-		if len(where)>0 {
+		if len(where) > 0 {
 			break
 		}
 		ftag := t.Field(i).Tag.Get("col")
@@ -224,5 +224,5 @@ func (DS *DbStruct)Delete(TblName string,obj interface{},Key string) string {
 			}
 		}
 	}
-	return fmt.Sprintf(tmpstr,TblName,where)
+	return fmt.Sprintf(tmpstr, TblName, where)
 }

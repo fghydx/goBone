@@ -1,15 +1,15 @@
-package GLConvert
+package ToolsConvert
 
 // Package dateparse parses date-strings without knowing the format
 // in advance, using a fast lex based approach to eliminate shotgun
 // attempts.  It leans towards US style dates when there is a conflict.
 
 import (
-"fmt"
-"strconv"
-"strings"
-"time"
-"unicode"
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+	"unicode"
 )
 
 //       _           _
@@ -913,4 +913,3 @@ func agoTime(datestr string, d time.Duration) (time.Time, error) {
 	}
 	return time.Now().Add(-d * time.Duration(m)), nil
 }
-

@@ -1,5 +1,4 @@
-package GLCompress
-
+package ToolsCompress
 
 //带缓存池的gzip压缩与解压缩,频繁使用时用池的
 import (

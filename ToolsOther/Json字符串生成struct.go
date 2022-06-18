@@ -1,4 +1,4 @@
-package GLUtils
+package ToolsOther
 
 import (
 	"bytes"
@@ -8,8 +8,7 @@ import (
 	"strings"
 )
 
-
-func createSubStruct(m map[string]interface{},structName string) (result []string){
+func createSubStruct(m map[string]interface{}, structName string) (result []string) {
 	var buffer bytes.Buffer
 	buffer.WriteString("type ")
 	buffer.WriteString(structName)
@@ -23,13 +22,13 @@ func createSubStruct(m map[string]interface{},structName string) (result []strin
 		//buffer.WriteString(fmt.Sprintf("%T", v))
 		switch reflect.TypeOf(v).Kind() {
 		case reflect.Slice:
-			if value,ok := v.([]interface{})[0].(map[string]interface{});ok {
+			if value, ok := v.([]interface{})[0].(map[string]interface{}); ok {
 				substruct := createSubStruct(value, "T"+fname)
 				result = append(result, substruct...)
 				buffer.WriteString("[]T" + fname)
 			}
-			if value,ok := v.([]interface{});ok{
-				buffer.WriteString("[]"+reflect.TypeOf(value[0]).String())
+			if value, ok := v.([]interface{}); ok {
+				buffer.WriteString("[]" + reflect.TypeOf(value[0]).String())
 			}
 			buffer.WriteString("     `json:\"")
 			buffer.WriteString(k)
@@ -56,13 +55,13 @@ func createSubStruct(m map[string]interface{},structName string) (result []strin
 	return
 }
 
-func JsonToStruct(jsonStr string,structName string) (result []string) {
+func JsonToStruct(jsonStr string, structName string) (result []string) {
 	m := make(map[string]interface{})
 	err := json.Unmarshal([]byte(jsonStr), &m)
 	if err != nil {
 		fmt.Println("转化错误:", err)
 		return nil
 	}
-	result = createSubStruct(m,structName)
+	result = createSubStruct(m, structName)
 	return
 }
