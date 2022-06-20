@@ -12,12 +12,20 @@ func CreateObjFromObj(ImplObj interface{}) interface{} {
 	return v
 }
 
-// GetObjType 下面两个函数其实就是把上面一个函数拆分了而已
+// GetObjType 获到对像的类型
 func GetObjType(obj interface{}) reflect.Type {
 	t := reflect.ValueOf(obj).Type()
 	return t
 }
+
+// GetObjRefType 获到对像的类型地址
+func GetObjRefType(obj interface{}) reflect.Type {
+	t := reflect.Indirect(reflect.ValueOf(obj)).Type()
+	return t
+}
+
 func CreateObjFromType(typ reflect.Type) interface{} {
 	v := reflect.New(typ).Interface()
 	return v
 }
+
