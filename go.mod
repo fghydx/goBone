@@ -1,4 +1,4 @@
-module gobone
+module github.com/fghydx/gobone
 
 go 1.18
 
